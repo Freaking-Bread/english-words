@@ -1,0 +1,32 @@
+[
+  {
+    "id": "demo_ubiquitous",
+    "word": "ubiquitous",
+    "meaning": "вездесущий, повсюду встречающийся (демо-слово)",
+    "example": "",
+    "learned": false,
+    "category": "word",
+    "createdAt": 1,
+    "updatedAt": 1
+  },
+  {
+    "id": "demo_resilient",
+    "word": "resilient",
+    "meaning": "стойкий, быстро восстанавливающийся (демо-слово)",
+    "example": "",
+    "learned": false,
+    "category": "word",
+    "createdAt": 2,
+    "updatedAt": 2
+  },
+  {
+    "id": "demo_serendipity",
+    "word": "serendipity",
+    "meaning": "счастливая случайность (демо — нажми ☁️ и загрузи свои слова)",
+    "example": "",
+    "learned": true,
+    "category": "word",
+    "createdAt": 3,
+    "updatedAt": 3
+  }
+]
