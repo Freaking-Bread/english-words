@@ -1,7 +1,7 @@
 // Настройки приложения.
 // Синхронизация читает/пишет words.json в ПРИВАТНОМ репозитории данных.
 export const GITHUB = {
-  owner: "",                    // ← имя пользователя GitHub (впишется при публикации)
+  owner: "Freaking-Bread",      // имя пользователя GitHub
   repo: "english-words-data",   // приватный репозиторий с реальными словами
   branch: "main",
   path: "words.json",
