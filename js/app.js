@@ -250,17 +250,40 @@ $("#btn-push").addEventListener("click", async () => {
   }
 });
 
+// Индикатор синхронизации (снизу слева)
+let hideStatusTimer = null;
+function setSyncStatus(state) {
+  const el = $("#sync-indicator");
+  clearTimeout(hideStatusTimer);
+  if (state === "saving") {
+    el.className = "sync-indicator is-visible";
+    el.innerHTML = `<span class="spinner"></span><span>Сохраняю…</span>`;
+  } else if (state === "saved") {
+    el.className = "sync-indicator is-visible is-saved";
+    el.innerHTML = `<span class="sync-ic">✓</span><span>Сохранено</span>`;
+    hideStatusTimer = setTimeout(() => (el.className = "sync-indicator"), 2200);
+  } else if (state === "error") {
+    el.className = "sync-indicator is-visible is-error";
+    el.innerHTML = `<span class="sync-ic">⚠</span><span>Не сохранено</span>`;
+  } else {
+    el.className = "sync-indicator";
+  }
+}
+
 // Автосохранение в GitHub (с задержкой), если настроено
 let pushTimer = null;
 function scheduleAutoPush() {
   if (!isConfigured()) return;
   clearTimeout(pushTimer);
+  setSyncStatus("saving"); // крутится с момента правки до завершения отправки
   pushTimer = setTimeout(async () => {
     try {
       await push(getWords(), "Auto-sync from app");
       refreshSyncStatus();
+      setSyncStatus("saved");
     } catch (err) {
       console.warn("auto-push failed:", err.message);
+      setSyncStatus("error");
     }
   }, 4000);
 }

@@ -205,6 +205,29 @@ body {
 .toast.warn { background: var(--warn); }
 .toast.err { background: var(--err); }
 
+/* ===== Индикатор синхронизации (снизу слева) ================= */
+.sync-indicator {
+  position: fixed; z-index: 40;
+  left: max(14px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 13px; border-radius: 999px; font-size: .82rem; font-weight: 600;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  opacity: 0; transform: translateY(10px); pointer-events: none;
+  transition: opacity .25s, transform .25s;
+}
+.sync-indicator.is-visible { opacity: 1; transform: translateY(0); }
+.sync-indicator.is-saved { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); }
+.sync-indicator.is-error { color: var(--err); border-color: color-mix(in srgb, var(--err) 40%, var(--border)); }
+.sync-ic { font-weight: 800; }
+
+.spinner {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* ===== Адаптив =============================================== */
 @media (max-width: 560px) {
   .grid { grid-template-columns: 1fr; }
