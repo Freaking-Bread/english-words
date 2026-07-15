@@ -22,6 +22,17 @@ function b64DecodeUnicode(str) {
   );
 }
 
+// Проверить, что токен реально видит приватный репозиторий данных.
+export async function checkAccess() {
+  const res = await fetch(`${API}/repos/${GITHUB.owner}/${GITHUB.repo}`, { headers: headers() });
+  if (res.status === 401) throw new Error("Неверный или просроченный токен (401). Скопируй токен заново (github_pat_…).");
+  if (res.status === 403) throw new Error("Токену не хватает прав (403).");
+  if (res.status === 404)
+    throw new Error(`Токен не видит репозиторий «${GITHUB.repo}». Проверь, что токен выдан именно на этот репозиторий с правом Contents: Read and write.`);
+  if (!res.ok) throw new Error(`GitHub: ${res.status} ${res.statusText}`);
+  return true;
+}
+
 export function getToken() {
   return localStorage.getItem(KEYS.token) || "";
 }

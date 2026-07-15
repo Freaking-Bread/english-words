@@ -4,7 +4,7 @@ import {
   loadInitial, getWords, setWords, subscribe,
   addWord, updateWord, deleteWord, toggleLearned, stats,
 } from "./store.js";
-import { pull, push, getToken, setToken, isConfigured } from "./github.js";
+import { pull, push, getToken, setToken, isConfigured, checkAccess } from "./github.js";
 
 // ── Состояние интерфейса ─────────────────────────────────────────────
 const ui = { filter: "all", query: "", editMode: false };
@@ -171,10 +171,22 @@ function refreshSyncStatus() {
   }
 }
 
-$("#btn-save-token").addEventListener("click", () => {
-  setToken($("#token-input").value);
+$("#btn-save-token").addEventListener("click", async () => {
+  const val = $("#token-input").value.trim();
+  setToken(val);
   refreshSyncStatus();
-  toast("Токен сохранён", "ok");
+  if (!val) { toast("Токен удалён", "warn"); return; }
+  if (!/^github_pat_|^ghp_/.test(val)) {
+    toast("Похоже, это не токен. Нужна строка github_pat_…", "err");
+    return;
+  }
+  try {
+    toast("Проверяю доступ…");
+    await checkAccess();
+    toast("Токен сохранён, доступ есть ✓", "ok");
+  } catch (err) {
+    toast(err.message, "err");
+  }
 });
 
 $("#btn-pull").addEventListener("click", async () => {
@@ -183,11 +195,15 @@ $("#btn-pull").addEventListener("click", async () => {
     const { words } = await pull();
     if (words) {
       setWords(words);
-      toast("Загружено из GitHub", "ok");
-    } else toast("В репозитории пока нет файла", "warn");
+      toast(`Загружено из GitHub: ${words.length} слов`, "ok");
+    } else {
+      // 404: уточняем причину — нет доступа или реально нет файла
+      await checkAccess();
+      toast("Репозиторий доступен, но файла words.json в нём нет", "warn");
+    }
     refreshSyncStatus();
   } catch (err) {
-    toast("Ошибка загрузки: " + err.message, "err");
+    toast(err.message, "err");
   }
 });
 
