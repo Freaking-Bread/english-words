@@ -2,12 +2,14 @@
 import { KEYS } from "./config.js";
 import {
   loadInitial, getWords, setWords, subscribe,
-  addWord, updateWord, deleteWord, toggleLearned, stats,
+  addWord, updateWord, deleteWord, toggleLearned,
 } from "./store.js";
+
+const SECTION_LABEL = { word: "слово", linker: "связку", rule: "правило" };
 import { pull, push, getToken, setToken, isConfigured, checkAccess } from "./github.js";
 
 // ── Состояние интерфейса ─────────────────────────────────────────────
-const ui = { filter: "all", query: "", editMode: false };
+const ui = { section: "word", filter: "learning", query: "", editMode: false };
 
 // ── Короткие хелперы ─────────────────────────────────────────────────
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -47,6 +49,7 @@ function speak(word) {
 function visibleWords() {
   const q = ui.query.trim().toLowerCase();
   return getWords().filter((w) => {
+    if ((w.category || "word") !== ui.section) return false;
     if (ui.filter === "learned" && !w.learned) return false;
     if (ui.filter === "learning" && w.learned) return false;
     if (!q) return true;
@@ -59,28 +62,44 @@ function visibleWords() {
 
 // ── Рендер одной карточки ────────────────────────────────────────────
 function cardHtml(w) {
-  const learned = w.learned ? "is-learned" : "";
+  const cat = w.category || "word";
+  const isRule = cat === "rule";
+  const learnedCls = w.learned ? "is-learned" : "";
+
+  // Правила — это заметки: без произношения и клипов, текст показываем обычным блоком.
+  const head = isRule
+    ? `<p class="card__rule">${esc(w.word)}</p>`
+    : `<div class="card__word-row">
+          <h3 class="card__word">${esc(w.word)}</h3>
+          <button class="mini-btn" data-act="speak" title="Произнести">🔊</button>
+        </div>`;
+
+  const meaning = w.meaning
+    ? `<p class="card__meaning">${esc(w.meaning)}</p>`
+    : isRule ? "" : `<p class="card__meaning"><span class="muted">— нет значения —</span></p>`;
+
+  const media = isRule ? "" :
+    `<a class="tag-btn" href="${playphraseUrl(w.word)}" target="_blank" rel="noopener" title="Клипы из фильмов">🎬 Клипы</a>
+     <a class="tag-btn" href="${youglishUrl(w.word)}" target="_blank" rel="noopener" title="Произношение из видео">🗣 YouGlish</a>`;
+
+  const editBtns = ui.editMode
+    ? `<button class="tag-btn tag-btn--edit" data-act="edit">✏️ Правка</button>
+       <button class="tag-btn tag-btn--del" data-act="delete">🗑</button>`
+    : "";
+
+  const actions = media || editBtns ? `<div class="card__actions">${media}${editBtns}</div>` : "";
+
   return `
-    <article class="card ${learned}" data-id="${w.id}">
+    <article class="card card--${cat} ${learnedCls}" data-id="${w.id}">
       <button class="card__check" data-act="learned" title="Отметить как выученное" aria-pressed="${w.learned}">
         ${w.learned ? "✓" : ""}
       </button>
-
       <div class="card__body">
-        <div class="card__word-row">
-          <h3 class="card__word">${esc(w.word)}</h3>
-          <button class="mini-btn" data-act="speak" title="Произнести">🔊</button>
-        </div>
-        <p class="card__meaning">${esc(w.meaning) || '<span class="muted">— нет значения —</span>'}</p>
+        ${head}
+        ${meaning}
         ${w.example ? `<p class="card__example">“${esc(w.example)}”</p>` : ""}
       </div>
-
-      <div class="card__actions">
-        <a class="tag-btn" href="${playphraseUrl(w.word)}" target="_blank" rel="noopener" title="Клипы из фильмов">🎬 Клипы</a>
-        <a class="tag-btn" href="${youglishUrl(w.word)}" target="_blank" rel="noopener" title="Произношение из видео">🗣 YouGlish</a>
-        ${ui.editMode ? `<button class="tag-btn tag-btn--edit" data-act="edit">✏️ Правка</button>
-        <button class="tag-btn tag-btn--del" data-act="delete">🗑</button>` : ""}
-      </div>
+      ${actions}
     </article>`;
 }
 
@@ -89,10 +108,23 @@ function render() {
   grid.innerHTML = list.map(cardHtml).join("");
   empty.classList.toggle("hidden", list.length > 0);
 
-  const s = stats();
-  $("#progress-text").textContent = `${s.learned} / ${s.total}`;
-  const pct = s.total ? Math.round((s.learned / s.total) * 100) : 0;
-  $("#progress-fill").style.width = pct + "%";
+  // счётчики на вкладках
+  const counts = {};
+  getWords().forEach((w) => {
+    const c = w.category || "word";
+    counts[c] = (counts[c] || 0) + 1;
+  });
+  document.querySelectorAll(".tab__count").forEach((el) => {
+    el.textContent = counts[el.dataset.count] || 0;
+  });
+
+  // прогресс — по текущей вкладке
+  const inSection = getWords().filter((w) => (w.category || "word") === ui.section);
+  const learned = inSection.filter((w) => w.learned).length;
+  const total = inSection.length;
+  $("#progress-text").textContent = `${learned} / ${total}`;
+  $("#progress-fill").style.width = (total ? Math.round((learned / total) * 100) : 0) + "%";
+
   document.body.classList.toggle("edit-mode", ui.editMode);
 }
 
@@ -127,7 +159,7 @@ function openWordDialog(id = null) {
     wordForm.meaning.value = w.meaning || "";
     wordForm.example.value = w.example || "";
   } else {
-    title.textContent = "Новое слово";
+    title.textContent = "Добавить " + (SECTION_LABEL[ui.section] || "запись");
     wordForm.reset();
   }
   wordDialog.showModal();
@@ -146,7 +178,7 @@ wordForm.addEventListener("submit", (e) => {
     meaning: data.meaning.trim(),
     example: data.example.trim(),
   });
-  else addWord(data);
+  else addWord({ ...data, category: ui.section });
   wordDialog.close();
   toast(editingId ? "Сохранено" : "Слово добавлено", "ok");
 });
@@ -244,6 +276,14 @@ $("#filters").addEventListener("click", (e) => {
   if (!chip) return;
   ui.filter = chip.dataset.filter;
   [...$("#filters").children].forEach((c) => c.classList.toggle("is-active", c === chip));
+  render();
+});
+
+$("#tabs").addEventListener("click", (e) => {
+  const tab = e.target.closest(".tab");
+  if (!tab) return;
+  ui.section = tab.dataset.section;
+  [...$("#tabs").children].forEach((t) => t.classList.toggle("is-active", t === tab));
   render();
 });
 

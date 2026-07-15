@@ -54,7 +54,7 @@ function uid() {
   return "w_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
-export function addWord({ word, meaning = "", example = "" }) {
+export function addWord({ word, meaning = "", example = "", category = "word" }) {
   const now = Date.now();
   const item = {
     id: uid(),
@@ -62,6 +62,7 @@ export function addWord({ word, meaning = "", example = "" }) {
     meaning: meaning.trim(),
     example: example.trim(),
     learned: false,
+    category,
     createdAt: now,
     updatedAt: now,
   };

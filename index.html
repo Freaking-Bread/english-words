@@ -19,6 +19,12 @@
         </div>
       </div>
 
+      <nav class="tabs" id="tabs">
+        <button class="tab is-active" data-section="word">📖 Слова <span class="tab__count" data-count="word">0</span></button>
+        <button class="tab" data-section="linker">🔗 Связки <span class="tab__count" data-count="linker">0</span></button>
+        <button class="tab" data-section="rule">📐 Правила <span class="tab__count" data-count="rule">0</span></button>
+      </nav>
+
       <div class="progress">
         <div class="progress__bar"><span id="progress-fill" class="progress__fill"></span></div>
         <span id="progress-text" class="progress__text">0 / 0</span>
@@ -27,8 +33,7 @@
       <div class="appbar__row appbar__tools">
         <input id="search" class="search" type="search" placeholder="Поиск слова или значения…" autocomplete="off" />
         <div class="chips" id="filters">
-          <button class="chip is-active" data-filter="all">Все</button>
-          <button class="chip" data-filter="learning">Учу</button>
+          <button class="chip is-active" data-filter="learning">Учу</button>
           <button class="chip" data-filter="learned">Выучено</button>
         </div>
       </div>

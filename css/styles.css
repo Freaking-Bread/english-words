@@ -82,6 +82,25 @@ body {
 }
 .chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+/* Вкладки разделов */
+.tabs {
+  display: flex; gap: 6px; margin-top: 12px;
+  background: var(--surface-2); padding: 4px; border-radius: 14px;
+}
+.tab {
+  flex: 1; border: none; background: transparent; color: var(--muted);
+  padding: 9px 8px; border-radius: 10px; font-size: .92rem; font-weight: 650; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background .15s, color .15s;
+}
+.tab:hover { color: var(--text); }
+.tab.is-active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.tab__count {
+  font-size: .72rem; font-weight: 700; min-width: 20px; padding: 1px 6px; border-radius: 999px;
+  background: var(--bg); color: var(--muted);
+}
+.tab.is-active .tab__count { background: var(--accent); color: #fff; }
+
 /* ===== Сетка карточек ======================================== */
 .container { max-width: 900px; margin: 0 auto; padding: 18px 16px; }
 .grid {
@@ -115,6 +134,11 @@ body {
 .card__meaning { margin: 0; color: var(--text); line-height: 1.4; }
 .card__example { margin: 0; color: var(--muted); font-style: italic; font-size: .92rem;
   border-left: 3px solid var(--accent-soft); padding-left: 10px; }
+
+/* Карточка-правило (заметка) */
+.card__rule { margin: 0; font-size: 1.02rem; line-height: 1.45; font-weight: 550; padding-right: 34px; }
+.card--rule { border-left: 4px solid var(--accent); }
+.card--linker .card__word { font-size: 1.1rem; }
 
 .card__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
 .tag-btn {
