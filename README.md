@@ -39,3 +39,8 @@ english-words-data/       ← приватный репозиторий (реа�
 
 Открой https://freaking-bread.github.io/english-words/
 
+
+## Фото
+
+Баннеры разделов (`img/*.webp`) — с [Unsplash](https://unsplash.com/license), бесплатная лицензия:
+Lucas Davies (Биг-Бен), Pedro Lastra (Бруклинский мост), Prateek Katyal (книги).

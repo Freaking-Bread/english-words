@@ -1,50 +1,98 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#6366f1" />
-    <title>Мои английские слова</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>" />
+    <meta name="theme-color" content="#0b0b12" />
+    <title>My English · Мои английские слова</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236366f1'/><stop offset='1' stop-color='%23a855f7'/></linearGradient></defs><rect width='32' height='32' rx='8' fill='url(%23g)'/><text x='16' y='22.5' font-family='Georgia,serif' font-size='17' font-weight='700' fill='white' text-anchor='middle'>Aa</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
+    <!-- Фон: статичные цветные пятна (без анимации — не грузит видеокарту) -->
+    <div class="bg" aria-hidden="true"></div>
+
+    <!-- Иконки (спрайт) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/></symbol>
+      <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19"/></symbol>
+      <symbol id="ic-rule" viewBox="0 0 24 24"><path d="M3 17 9 5l6 12"/><path d="M5.5 13h7"/><path d="M17 8h4"/><path d="M19 6v11"/></symbol>
+      <symbol id="ic-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 4v16"/><path d="M17 4v16"/><path d="M3 9h4"/><path d="M3 15h4"/><path d="M17 9h4"/><path d="M17 15h4"/></symbol>
+      <symbol id="ic-ext" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+      <symbol id="ic-close" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></symbol>
+      <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2"/><path d="M12 19.8V22"/><path d="M2 12h2.2"/><path d="M19.8 12H22"/><path d="m4.9 4.9 1.6 1.6"/><path d="m17.5 17.5 1.6 1.6"/><path d="m19.1 4.9-1.6 1.6"/><path d="m6.5 17.5-1.6 1.6"/></symbol>
+      <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></symbol>
+      <symbol id="ic-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.4-8A6 6 0 0 1 18 9.5a4.25 4.25 0 0 1-.5 8.5z"/></symbol>
+      <symbol id="ic-pencil" viewBox="0 0 24 24"><path d="M4 20h4L20 8a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m14.5 5.5 4 4"/></symbol>
+      <symbol id="ic-speak" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path d="M18.3 6.5a8 8 0 0 1 0 11"/></symbol>
+      <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+      <symbol id="ic-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="m6 7 1 13h10l1-13"/></symbol>
+      <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+      <symbol id="ic-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+      <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 3s5 4.5 5 9a5 5 0 0 1-10 0c0-1.5.7-2.8 1.5-3.7C9 10 10 11 10 12c0-3 2-6 2-9z"/></symbol>
+      <symbol id="ic-cards" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="15" rx="2.5"/><path d="M8 3h10.5A2.5 2.5 0 0 1 21 5.5V16"/></symbol>
+      <symbol id="ic-spark" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m6 6 2.5 2.5"/><path d="m15.5 15.5 2.5 2.5"/><path d="m18 6-2.5 2.5"/><path d="M8.5 15.5 6 18"/></symbol>
+      <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8.5 20h7"/><path d="M10 17h4v3h-4z"/></symbol>
+      <symbol id="ic-flip" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15"/><path d="M4 20v-5h5"/></symbol>
+    </svg>
+
     <header class="appbar">
-      <div class="appbar__row">
-        <h1 class="appbar__title">📘 Мои слова</h1>
-        <div class="appbar__actions">
-          <button id="btn-theme" class="icon-btn" title="Тема" aria-label="Сменить тему">🌙</button>
-          <button id="btn-sync" class="icon-btn" title="Синхронизация" aria-label="Синхронизация">☁️</button>
-          <button id="btn-edit" class="icon-btn" title="Режим редактирования" aria-label="Режим редактирования">✏️</button>
+      <div class="appbar__inner">
+        <div class="appbar__row">
+          <h1 class="appbar__title"><span class="logo" aria-hidden="true">Aa</span><span class="appbar__name">My&nbsp;English</span></h1>
+          <div class="appbar__actions">
+            <button id="btn-theme" class="icon-btn" title="Тема" aria-label="Сменить тему"><svg class="ic"><use href="#ic-sun"/></svg></button>
+            <button id="btn-sync" class="icon-btn" title="Синхронизация" aria-label="Синхронизация"><svg class="ic"><use href="#ic-cloud"/></svg></button>
+            <button id="btn-edit" class="icon-btn" title="Режим редактирования" aria-label="Режим редактирования"><svg class="ic"><use href="#ic-pencil"/></svg></button>
+          </div>
         </div>
+
+        <nav class="tabs" id="tabs">
+          <button class="tab is-active" data-section="word"><svg class="ic"><use href="#ic-book"/></svg><span class="tab__label">Слова</span><span class="tab__count" data-count="word">0</span></button>
+          <button class="tab" data-section="linker"><svg class="ic"><use href="#ic-link"/></svg><span class="tab__label">Связки</span><span class="tab__count" data-count="linker">0</span></button>
+          <button class="tab" data-section="rule"><svg class="ic"><use href="#ic-rule"/></svg><span class="tab__label">Правила</span><span class="tab__count" data-count="rule">0</span></button>
+        </nav>
       </div>
+    </header>
 
-      <nav class="tabs" id="tabs">
-        <button class="tab is-active" data-section="word">📖 Слова <span class="tab__count" data-count="word">0</span></button>
-        <button class="tab" data-section="linker">🔗 Связки <span class="tab__count" data-count="linker">0</span></button>
-        <button class="tab" data-section="rule">📐 Правила <span class="tab__count" data-count="rule">0</span></button>
-      </nav>
+    <main class="container">
+      <!-- Баннер раздела: фото, приветствие, статистика -->
+      <section id="hero" class="hero">
+        <picture class="hero__pic">
+          <source id="hero-src-sm" media="(max-width: 640px)" srcset="img/word-sm.webp" />
+          <img id="hero-img" class="hero__img" data-key="word" src="img/word.webp" alt="" width="1400" height="420" decoding="async" fetchpriority="high" />
+        </picture>
+        <div class="hero__shade"></div>
+        <div class="hero__body">
+          <p class="hero__kicker" id="hero-kicker"></p>
+          <h2 class="hero__title" id="hero-title"></h2>
+          <div class="hero__stats" id="hero-stats"></div>
+          <div class="hero__actions" id="hero-actions"></div>
+        </div>
+        <aside class="wotd hidden" id="wotd"></aside>
+      </section>
 
-      <div class="progress">
-        <div class="progress__bar"><span id="progress-fill" class="progress__fill"></span></div>
-        <span id="progress-text" class="progress__text">0 / 0</span>
-      </div>
-
-      <div class="appbar__row appbar__tools">
-        <input id="search" class="search" type="search" placeholder="Поиск слова или значения…" autocomplete="off" />
+      <!-- Поиск и фильтры -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="ic search-wrap__ic"><use href="#ic-search"/></svg>
+          <input id="search" class="search" type="search" placeholder="Поиск слова или значения…" autocomplete="off" />
+        </div>
         <div class="chips" id="filters">
           <button class="chip is-active" data-filter="learning">Учу</button>
           <button class="chip" data-filter="learned">Выучено</button>
         </div>
       </div>
-    </header>
 
-    <main class="container">
       <div id="grid" class="grid" aria-live="polite"></div>
-      <p id="empty" class="empty hidden">Ничего не найдено 🤔</p>
+      <div id="more" class="more" aria-hidden="true"></div>
+      <p id="empty" class="empty hidden">Ничего не найдено</p>
     </main>
 
-    <button id="btn-add" class="fab" title="Добавить слово" aria-label="Добавить слово">＋</button>
+    <button id="btn-add" class="fab" title="Добавить" aria-label="Добавить"><svg class="ic"><use href="#ic-plus"/></svg></button>
 
     <!-- Модалка: добавить/редактировать слово -->
     <dialog id="word-dialog" class="dialog">
@@ -72,16 +120,16 @@
     <!-- Модалка: синхронизация с GitHub -->
     <dialog id="sync-dialog" class="dialog">
       <div class="dialog__form">
-        <h2 class="dialog__title">☁️ Синхронизация</h2>
+        <h2 class="dialog__title">Синхронизация</h2>
         <p class="muted" id="sync-status">Токен не задан — работаешь локально.</p>
         <label class="field">
           <span>GitHub Personal Access Token</span>
-          <input id="token-input" type="password" placeholder="ghp_…" autocomplete="off" />
+          <input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off" />
           <small class="hint">Хранится только в этом браузере. Нужен доступ <code>Contents: read/write</code> к репозиторию.</small>
         </label>
         <div class="sync-buttons">
-          <button class="btn btn--ghost" id="btn-pull">⬇️ Загрузить из GitHub</button>
-          <button class="btn btn--primary" id="btn-push">⬆️ Отправить в GitHub</button>
+          <button class="btn btn--ghost" id="btn-pull">Загрузить из GitHub</button>
+          <button class="btn btn--primary" id="btn-push">Отправить в GitHub</button>
         </div>
         <div class="dialog__actions">
           <button type="button" class="btn btn--ghost" data-close>Закрыть</button>
@@ -90,8 +138,22 @@
       </div>
     </dialog>
 
-    <div id="sync-indicator" class="sync-indicator" role="status" aria-live="polite"></div>
+    <!-- Тренировка карточками -->
+    <dialog id="trainer" class="trainer">
+      <div class="trainer__top">
+        <button class="icon-btn" data-close aria-label="Закрыть"><svg class="ic"><use href="#ic-close"/></svg></button>
+        <div class="trainer__bar"><span id="tr-fill"></span></div>
+        <span class="trainer__count" id="tr-count">0 / 0</span>
+        <button class="chip trainer__dir" id="tr-dir" title="Направление">EN → RU</button>
+      </div>
+      <div class="trainer__stage" id="tr-stage"></div>
+      <div class="trainer__actions" id="tr-actions">
+        <button class="big-btn big-btn--no" id="tr-no">Ещё учу</button>
+        <button class="big-btn big-btn--yes" id="tr-yes"><svg class="ic"><use href="#ic-check"/></svg>Знаю</button>
+      </div>
+    </dialog>
 
+    <div id="sync-indicator" class="sync-indicator" role="status" aria-live="polite"></div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script type="module" src="js/app.js"></script>
